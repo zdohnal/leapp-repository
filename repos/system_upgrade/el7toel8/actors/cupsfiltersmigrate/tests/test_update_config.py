@@ -44,6 +44,25 @@ testdata = (
          'CreateIPPPrinterQueues All\n')
     ),
     (
+        'dfggfd\n# CreateIPPPrinterQueues bluff\n',
+        ('dfggfd\n# CreateIPPPrinterQueues bluff\n\n'
+         '# content added by Leapp\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n'
+         'CreateIPPPrinterQueues All\n')
+    ),
+    (
+        'dfggfd\n CreateIPPPrinterQueues bluff\n',
+        ('dfggfd\n CreateIPPPrinterQueues bluff\n\n'
+         '# content added by Leapp\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n')
+    ),
+    (
+        'dfggfd\n LocalQueueNamingRemoteCUPS blaf\n',
+        ('dfggfd\n LocalQueueNamingRemoteCUPS blaf\n\n'
+         '# content added by Leapp\n'
+         'CreateIPPPrinterQueues All\n')
+    ),
+    (
         ('   CreateIPPPrinterQueues All\n'
          '       LocalQueueNamingRemoteCUPS RemoteName\n'),
         ('   CreateIPPPrinterQueues All\n'
