@@ -6,10 +6,11 @@ from leapp.models import InstalledRedHatSignedRPM
 BROWSED_CONFIG = '/etc/cups/cups-browsed.conf'
 
 
-# list of macros that should be set
+# The list of macros that should be set to get the behavior
+# from previous RHEL
 NEW_MACROS = [
-    'LocalQueueNamingRemoteCUPS RemoteName',
-    'CreateIPPPrinterQueues All'
+    ('LocalQueueNamingRemoteCUPS', 'RemoteName'),
+    ('CreateIPPPrinterQueues', 'All')
 ]
 
 
@@ -22,12 +23,12 @@ def _macro_exists(path, macro):
     :return boolean res: macro does/does not exist in the file
     """
     with open(path, 'r') as f:
-        content = f.read()
+        lines = f.readlines()
 
-    res = False
-    if macro in content:
-        res = True
-    return res
+    for line in lines:
+        if line.lstrip().startswith(macro):
+            return True
+    return False
 
 
 def _append_string(path, content):
@@ -54,7 +55,7 @@ def update_config(path, check_function=_macro_exists,
 
     macros = []
     for macro in NEW_MACROS:
-        if not check_function(path, macro):
+        if not check_function(path, macro[0]):
             macros.append(macro)
 
     if not macros:

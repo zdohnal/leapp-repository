@@ -5,11 +5,50 @@ from leapp.libraries.actor.library import update_config
 
 
 testdata = (
-    '\n',
-    'bleblaba\n',
-    'fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n',
-    'fnfngbfg\nCreateIPPPrinterQueues All\n',
-    'CreateIPPPrinterQueues All\nLocalQueueNamingRemoteCUPS RemoteName\n'
+    (
+        '\n',
+        ('\n# content added by Leapp\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n'
+         'CreateIPPPrinterQueues All\n')
+    ),
+    (
+        'bleblaba\n',
+        ('bleblaba\n# content added by Leapp\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n'
+         'CreateIPPPrinterQueues All\n')
+    ),
+    (
+        'fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n',
+        ('fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n'
+         '# content added by Leapp\nCreateIPPPrinterQueues All\n')
+    ),
+    (
+        'fnfngbfg\nCreateIPPPrinterQueues All\n',
+        ('fnfngbfg\nCreateIPPPrinterQueues All\n'
+         '# content added by Leapp\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n')
+    ),
+    (
+        ('CreateIPPPrinterQueues All\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n'),
+        ('CreateIPPPrinterQueues All\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n')
+    ),
+    (
+        ('# CreateIPPPrinterQueues All\n'
+         '# LocalQueueNamingRemoteCUPS RemoteName\n'),
+        ('# CreateIPPPrinterQueues All\n'
+         '# LocalQueueNamingRemoteCUPS RemoteName\n'
+         '# content added by Leapp\n'
+         'LocalQueueNamingRemoteCUPS RemoteName\n'
+         'CreateIPPPrinterQueues All\n')
+    ),
+    (
+        ('   CreateIPPPrinterQueues All\n'
+         '       LocalQueueNamingRemoteCUPS RemoteName\n'),
+        ('    CreateIPPPrinterQueues All\n'
+         '       LocalQueueNamingRemoteCUPS RemoteName\n')
+    )
 )
 
 
@@ -28,10 +67,9 @@ class MockFile(object):
         raise IOError('Error during writing to file: {}.'.format(path))
 
     def exists(self, path, macro):
-        found = False
         if macro in self.content and self.path == path:
-            found = True
-        return found
+            return True
+        return False
 
 
 def test_update_config_file_errors():
@@ -45,20 +83,11 @@ def test_update_config_file_errors():
     assert f.content == ''
 
 
-@pytest.mark.parametrize('content', testdata)
-def test_update_config_append_into_file(content):
+@pytest.mark.parametrize('content,expected', testdata)
+def test_update_config_append_into_file(content, expected):
     path = 'bar'
     f = MockFile(path, content)
 
-    macros = []
-    for macro in NEW_MACROS:
-        if not f.exists(path, macro):
-            macros.append(macro)
-
-    fmt_input = ''
-    if macros:
-        fmt_input = "\n{comment_line}\n{content}\n".format(comment_line='# content added by Leapp',
-                                                           content='\n'.join(macros))
     update_config(path, f.exists, f.append)
 
-    assert f.content == content + fmt_input
+    assert f.content == expected
