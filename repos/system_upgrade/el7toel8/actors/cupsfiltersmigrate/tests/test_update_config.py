@@ -49,11 +49,11 @@ testdata = (
     ('fnfngbfg\n  CreateIPPPrinterQueues Foo\n',
         _gen_append_str([0])),
     ('CreateIPPPrinterQueues All\nLocalQueueNamingRemoteCUPS RemoteName\n',
-        _gen_append_str())
+        _gen_append_str()),
     ('CreateIPPPrinterQueues Foo\nLocalQueueNamingRemoteCUPS Bar\n',
-        _gen_append_str())
+        _gen_append_str()),
     ('foo\nCreateIPPPrinterQueues Foo\nLocalQueueNamingRemoteCUPS Bar\nFoobar\n',
-        _gen_append_str())
+        _gen_append_str()),
     ('foo\nCreateIPPPrinterQueues Foo\n# LocalQueueNamingRemoteCUPS Bar\nFoobar\n',
         _gen_append_str([0]))
 )
