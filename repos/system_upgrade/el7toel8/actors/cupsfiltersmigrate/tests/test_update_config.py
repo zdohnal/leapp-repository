@@ -4,70 +4,58 @@ from leapp.libraries.actor.library import NEW_MACROS
 from leapp.libraries.actor.library import update_config
 
 
+def _gen_append_str(list_out=None):
+    """
+    Just helper function to generate string expected to be added for an input (see testdata) for testing.
+
+    :param list list_out: None, [0], [1], [0,1] - no more expected vals,
+                          which represents what macros should be appended
+                          in output
+    """
+    if not list_out:
+        return ''
+    _out_list = ('LocalQueueNamingRemoteCUPS RemoteName', 'CreateIPPPrinterQueues All')
+    output = ['# content added by Leapp']
+    for i in list_out:
+        output.append(_out_list[i])
+    # ensure the extra NL is before the string and the empty NL is in the end
+    # of the string (/file) as well
+    return '\n{}\n'.format('\n'.join(output))
+
+
 testdata = (
-    (
-        '\n',
-        ('\n\n# content added by Leapp\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n'
-         'CreateIPPPrinterQueues All\n')
-    ),
-    (
-        'bleblaba\n',
-        ('bleblaba\n\n# content added by Leapp\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n'
-         'CreateIPPPrinterQueues All\n')
-    ),
-    (
-        'fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n',
-        ('fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n\n'
-         '# content added by Leapp\nCreateIPPPrinterQueues All\n')
-    ),
-    (
-        'fnfngbfg\nCreateIPPPrinterQueues All\n',
-        ('fnfngbfg\nCreateIPPPrinterQueues All\n\n'
-         '# content added by Leapp\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n')
-    ),
-    (
-        ('CreateIPPPrinterQueues All\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n'),
-        ('CreateIPPPrinterQueues All\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n')
-    ),
-    (
-        ('# CreateIPPPrinterQueues All\n'
-         '# LocalQueueNamingRemoteCUPS RemoteName\n'),
-        ('# CreateIPPPrinterQueues All\n'
-         '# LocalQueueNamingRemoteCUPS RemoteName\n\n'
-         '# content added by Leapp\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n'
-         'CreateIPPPrinterQueues All\n')
-    ),
-    (
-        'dfggfd\n# CreateIPPPrinterQueues bluff\n',
-        ('dfggfd\n# CreateIPPPrinterQueues bluff\n\n'
-         '# content added by Leapp\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n'
-         'CreateIPPPrinterQueues All\n')
-    ),
-    (
-        'dfggfd\n CreateIPPPrinterQueues bluff\n',
-        ('dfggfd\n CreateIPPPrinterQueues bluff\n\n'
-         '# content added by Leapp\n'
-         'LocalQueueNamingRemoteCUPS RemoteName\n')
-    ),
-    (
-        'dfggfd\n LocalQueueNamingRemoteCUPS blaf\n',
-        ('dfggfd\n LocalQueueNamingRemoteCUPS blaf\n\n'
-         '# content added by Leapp\n'
-         'CreateIPPPrinterQueues All\n')
-    ),
-    (
-        ('   CreateIPPPrinterQueues All\n'
-         '       LocalQueueNamingRemoteCUPS RemoteName\n'),
-        ('   CreateIPPPrinterQueues All\n'
-         '       LocalQueueNamingRemoteCUPS RemoteName\n')
-    )
+    ('\n',
+        _gen_append_str([0, 1])),
+    ('bleblaba\n',
+        _gen_append_str([0, 1])),
+   ('fdnfdf\n# LocalQueueNamingRemoteCUPS RemoteName\n',
+       _gen_append_str([0, 1])),
+    ('fdnfdf\nfoo # LocalQueueNamingRemoteCUPS RemoteName\n',
+        _gen_append_str([0, 1])),
+    ('fdnfdf\n# LocalQueueNamingRemoteCUPS Bar\n',
+        _gen_append_str([0, 1])),
+    ('fdnfdf\n  # LocalQueueNamingRemoteCUPS Bar\n',
+        _gen_append_str([0, 1])),
+    ('fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n',
+        _gen_append_str([1])),
+    ('fdnfdf\n  LocalQueueNamingRemoteCUPS RemoteName\n',
+        _gen_append_str([1])),
+    ('fdnfdf\nLocalQueueNamingRemoteCUPS Bar\n',
+        _gen_append_str([1])),
+    ('fnfngbfg\nCreateIPPPrinterQueues All\n',
+        _gen_append_str([0])),
+    ('fnfngbfg\nCreateIPPPrinterQueues Foo\n',
+        _gen_append_str([0])),
+    ('fnfngbfg\n  CreateIPPPrinterQueues Foo\n',
+        _gen_append_str([0])),
+    ('CreateIPPPrinterQueues All\nLocalQueueNamingRemoteCUPS RemoteName\n',
+        _gen_append_str())
+    ('CreateIPPPrinterQueues Foo\nLocalQueueNamingRemoteCUPS Bar\n',
+        _gen_append_str())
+    ('foo\nCreateIPPPrinterQueues Foo\nLocalQueueNamingRemoteCUPS Bar\nFoobar\n',
+        _gen_append_str())
+    ('foo\nCreateIPPPrinterQueues Foo\n# LocalQueueNamingRemoteCUPS Bar\nFoobar\n',
+        _gen_append_str([0]))
 )
 
 
@@ -110,4 +98,4 @@ def test_update_config_append_into_file(content, expected):
 
     update_config(path, f.exists, f.append)
 
-    assert f.content == expected
+    assert f.content == content + expected
