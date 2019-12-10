@@ -46,7 +46,7 @@ testdata = (
     (
         ('   CreateIPPPrinterQueues All\n'
          '       LocalQueueNamingRemoteCUPS RemoteName\n'),
-        ('    CreateIPPPrinterQueues All\n'
+        ('   CreateIPPPrinterQueues All\n'
          '       LocalQueueNamingRemoteCUPS RemoteName\n')
     )
 )
