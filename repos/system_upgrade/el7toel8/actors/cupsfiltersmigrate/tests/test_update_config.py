@@ -7,24 +7,24 @@ from leapp.libraries.actor.library import update_config
 testdata = (
     (
         '\n',
-        ('\n# content added by Leapp\n'
+        ('\n\n# content added by Leapp\n'
          'LocalQueueNamingRemoteCUPS RemoteName\n'
          'CreateIPPPrinterQueues All\n')
     ),
     (
         'bleblaba\n',
-        ('bleblaba\n# content added by Leapp\n'
+        ('bleblaba\n\n# content added by Leapp\n'
          'LocalQueueNamingRemoteCUPS RemoteName\n'
          'CreateIPPPrinterQueues All\n')
     ),
     (
         'fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n',
-        ('fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n'
+        ('fdnfdf\nLocalQueueNamingRemoteCUPS RemoteName\n\n'
          '# content added by Leapp\nCreateIPPPrinterQueues All\n')
     ),
     (
         'fnfngbfg\nCreateIPPPrinterQueues All\n',
-        ('fnfngbfg\nCreateIPPPrinterQueues All\n'
+        ('fnfngbfg\nCreateIPPPrinterQueues All\n\n'
          '# content added by Leapp\n'
          'LocalQueueNamingRemoteCUPS RemoteName\n')
     ),
@@ -38,7 +38,7 @@ testdata = (
         ('# CreateIPPPrinterQueues All\n'
          '# LocalQueueNamingRemoteCUPS RemoteName\n'),
         ('# CreateIPPPrinterQueues All\n'
-         '# LocalQueueNamingRemoteCUPS RemoteName\n'
+         '# LocalQueueNamingRemoteCUPS RemoteName\n\n'
          '# content added by Leapp\n'
          'LocalQueueNamingRemoteCUPS RemoteName\n'
          'CreateIPPPrinterQueues All\n')
