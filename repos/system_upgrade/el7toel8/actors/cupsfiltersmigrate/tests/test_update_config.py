@@ -67,8 +67,9 @@ class MockFile(object):
         raise IOError('Error during writing to file: {}.'.format(path))
 
     def exists(self, path, macro):
-        if macro in self.content and self.path == path:
-            return True
+        for line in self.content.split('\n'):
+            if line.lstrip().startswith(macro) and self.path == path:
+                return True
         return False
 
 
