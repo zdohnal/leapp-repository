@@ -56,7 +56,7 @@ def update_config(path, check_function=_macro_exists,
     macros = []
     for macro in NEW_MACROS:
         if not check_function(path, macro[0]):
-            macros.append(macro)
+            macros.append(' '.join(macro))
 
     if not macros:
         return
